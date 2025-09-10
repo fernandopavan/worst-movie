@@ -19,36 +19,27 @@ public class WorstMovieListService {
 
     private final MovieRepository repository;
 
-    public WorstMovieResponseDTO getWorstProducers() {
+    public WorstMovieResponseDTO getWorstProducersWin() {
         Map<String, List<Movie>> moviesByProducerMap = getProducersMap();
 
         List<WorstMovieDetailDTO> winners = new ArrayList<>();
 
-        moviesByProducerMap.forEach((key, value) -> {
-            List<WorstMovieDetailDTO> producersDetails = getProducerDetails(value);
-            winners.addAll(producersDetails);
+        moviesByProducerMap.forEach((producer, movies) -> {
+            Map<Integer, List<Integer>> intervalMap = getMapByIntervalProducer(movies);
+
+            intervalMap.forEach((key, value) ->
+                    winners.add(WorstMovieDetailDTO.builder()
+                            .producer(producer)
+                            .interval(key)
+                            .previousWin(value.getFirst())
+                            .followingWin(value.getLast())
+                            .build()));
         });
 
         return WorstMovieResponseDTO.builder()
                 .min(getLastTwoMinInterval(winners))
                 .max(getLastTwoMaxInterval(winners))
                 .build();
-    }
-
-    private List<WorstMovieDetailDTO> getProducerDetails(List<Movie> moviesByProducer) {
-        Map<Integer, List<Integer>> intervalWinProducer = getMapByIntervalProducer(moviesByProducer);
-
-        List<WorstMovieDetailDTO> winnerDTOList = new ArrayList<>();
-
-        intervalWinProducer.forEach((key, value) ->
-                winnerDTOList.add(WorstMovieDetailDTO.builder()
-                        .producer(moviesByProducer.getFirst().getProducers())
-                        .interval(key)
-                        .previousWin(value.getFirst())
-                        .followingWin(value.getLast())
-                        .build()));
-
-        return winnerDTOList;
     }
 
     private Map<Integer, List<Integer>> getMapByIntervalProducer(List<Movie> moviesByProducer) {

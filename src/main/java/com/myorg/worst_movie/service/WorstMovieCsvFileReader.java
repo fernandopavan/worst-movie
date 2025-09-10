@@ -5,7 +5,6 @@ import com.myorg.worst_movie.exception.exceptions.FileException;
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
 import com.opencsv.exceptions.CsvException;
-import com.opencsv.exceptions.CsvValidationException;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -18,7 +17,7 @@ public class WorstMovieCsvFileReader {
     public static List<MovieUploadDTO> reader(MultipartFile file) {
         try (Reader reader = new InputStreamReader(file.getInputStream())) {
 
-            CsvToBean csvToBean = new CsvToBeanBuilder(reader)
+            CsvToBean<MovieUploadDTO> csvToBean = new CsvToBeanBuilder<MovieUploadDTO>(reader)
                     .withType(MovieUploadDTO.class)
                     .withSeparator(';')
                     .withSkipLines(1)

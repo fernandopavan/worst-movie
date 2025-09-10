@@ -17,8 +17,8 @@ public class WorstMovieController {
     private final WorstMovieListService listService;
 
     @GetMapping
-    private ResponseEntity<WorstMovieResponseDTO> getWorstMovieList() {
-        return ResponseEntity.ok().body(listService.getWorstProducers());
+    private ResponseEntity<WorstMovieResponseDTO> getWorstProducersWin() {
+        return ResponseEntity.ok().body(listService.getWorstProducersWin());
     }
 
     @PostMapping("/upload")
